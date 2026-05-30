@@ -1,22 +1,78 @@
+import React, { useState } from 'react';
+
 export default function ITBAServiceWebsite() {
-  const services = [
-    {
-      title: 'Business Analysis & Requirement Gathering',
-      desc: 'Transform business goals into actionable technical requirements, BRDs, user stories, workflows, and implementation roadmaps.'
-    },
-    {
-      title: 'Digital Transformation Consulting',
-      desc: 'Modernize operations using AI, automation, analytics, and scalable digital ecosystems tailored for enterprises and SMEs.'
-    },
-    {
-      title: 'Website & E-Commerce Solutions',
-      desc: 'End-to-end website planning, UX strategy, CMS integrations, analytics setup, and scalable e-commerce consulting.'
-    },
-    {
-      title: 'AI & Analytics Enablement',
-      desc: 'Leverage dashboards, reporting, automation workflows, and AI-assisted operations to improve business efficiency.'
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    service: '',
+    message: ''
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch(
+      'http://localhost:5000/api/leads',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to submit');
     }
-  ]
+
+    const data = await response.json();
+
+    alert('Inquiry Submitted Successfully!');
+
+    setFormData({
+      name: '',
+      email: '',
+      company: '',
+      service: '',
+      message: ''
+    });
+
+    console.log(data);
+
+  } catch (error) {
+    console.error(error);
+    alert('Submission Failed');
+  }
+};
+  const services = [
+  {
+    title: 'Business Analysis & Requirement Gathering',
+    desc: 'Transform business goals into actionable technical requirements, BRDs, user stories, workflows, and implementation roadmaps.'
+  },
+  {
+    title: 'Digital Transformation Consulting',
+    desc: 'Modernize operations using AI, automation, analytics, and scalable digital ecosystems tailored for enterprises and SMEs.'
+  },
+  {
+    title: 'Website & E-Commerce Solutions',
+    desc: 'End-to-end website planning, UX strategy, CMS integrations, analytics setup, and scalable e-commerce consulting.'
+  },
+  {
+    title: 'AI & Analytics Enablement',
+    desc: 'Leverage dashboards, reporting, automation workflows, and AI-assisted operations to improve business efficiency.'
+  }
+];
 
   const faqs = [
     {
@@ -117,29 +173,38 @@ export default function ITBAServiceWebsite() {
               <p className="text-slate-400">Capture leads and connect with potential business clients.</p>
             </div>
 
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div>
                 <label className="text-sm text-slate-400 block mb-2">Full Name</label>
                 <input
-                  type="text"
-                  placeholder="Enter your name"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
-                />
+  type="text"
+  name="name"
+  value={formData.name}
+  onChange={handleChange}
+  placeholder="Enter your name"
+  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
+/>
               </div>
 
               <div>
                 <label className="text-sm text-slate-400 block mb-2">Email Address</label>
                 <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
-                />
+  type="email"
+  name="email"
+  value={formData.email}
+  onChange={handleChange}
+  placeholder="Enter your email"
+  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
+/>
               </div>
 
               <div>
                 <label className="text-sm text-slate-400 block mb-2">Company</label>
                 <input
                   type="text"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
                   placeholder="Company name"
                   className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
                 />
@@ -147,7 +212,12 @@ export default function ITBAServiceWebsite() {
 
               <div>
                 <label className="text-sm text-slate-400 block mb-2">Service Interested In</label>
-                <select className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400">
+                <select
+  name="service"
+  value={formData.service}
+  onChange={handleChange}
+  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
+>
                   <option>Business Analysis</option>
                   <option>Digital Transformation</option>
                   <option>AI Consulting</option>
@@ -158,13 +228,19 @@ export default function ITBAServiceWebsite() {
               <div>
                 <label className="text-sm text-slate-400 block mb-2">Project Details</label>
                 <textarea
-                  rows="4"
-                  placeholder="Tell us about your requirements"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
-                ></textarea>
+  rows="4"
+  name="message"
+  value={formData.message}
+  onChange={handleChange}
+  placeholder="Tell us about your requirements"
+  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-400"
+/>
               </div>
 
-              <button className="w-full bg-cyan-500 hover:bg-cyan-400 transition text-black font-bold py-3 rounded-xl shadow-lg shadow-cyan-500/20">
+              <button
+  type="submit"
+  className="w-full bg-cyan-500 hover:bg-cyan-400 transition text-black font-bold py-3 rounded-xl shadow-lg shadow-cyan-500/20"
+>
                 Submit Inquiry
               </button>
             </form>
